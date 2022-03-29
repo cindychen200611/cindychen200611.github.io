@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, minimum-scale=1, maximum-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+        <title>複利計算</title>
+        <style type="text/css">
+            input, button {
+                font-size: 18px;
+                padding: 6px 20px;
+                margin: 4px 0;
+                border: 1px solid #222;
+                border-radius: 3px;
+            }
+            button {
+                color: #fff;
+                border-color: #2091c3;
+                background-color: #2091c3;
+            }
+            button:hover {
+                color: #fff;
+                border-color: #167fad;
+                background-color: #167fad;
+            }
+            button.ttt {
+                border: 0px;
+                border-radius: 5px;
+            }
+            button.ttt:hover {
+                font-weight: normal;
+            }
+    
+            input[type="color"] {
+                width: 30px;
+                height: 30px;
+                padding: 4px;
+                background-color: #fff;
+                border: 1px solid #666;
+                border-radius: 50%;
+            }
+            input[type="color"]::-webkit-color-swatch,
+            input[type="color"]::-webkit-color-swatch-wrapper {
+                border: none;
+                border-radius: 50%;
+                padding: 0;
+            }
+            input[type="text"] {
+                color: blue;
+            }
+            input[type=checkbox] {
+                transform: scale(1.5);
+            }
+            input[type="text"].text-block {
+                width: 100%;
+            }
+    
+            label {
+                cursor: pointer;
+                margin: 0 5px;
+            }
+            select {
+                 border: solid 1px #282923;
+                 padding: 6px;
+            }
+    
+            table {
+                border: solid 1px #282923;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            table th,
+            table td {
+                padding: 5px;
+                text-align: right;
+            }
+            table th {
+                color: #fff;
+                background-color: #282923;
+            }
+            table tr:nth-child(even) {
+                background: #eee;
+            }
+            table th:nth-child(1),
+            table td:nth-child(1) {
+                text-align: center;
+            }
+    
+            div.output,
+            div.passage {
+                font-family: Consolas;
+                border: solid 1px #666;
+                padding: 6px;
+                margin: 10px 0;
+                width: 100%;
+                padding: 20px;
+            }
+            div.output {
+                color: #fff;
+                background-color: #282923;
+            }
+    
+            div.passage {
+                color: #333;
+                background-color: #c6e3d8;
+            }
+    
+            .fruit {
+                color: #4eed3b;
+            }
+    
+            div.basket {
+                border: solid 3px #007aae;
+                padding: 6px;
+                margin: 10px 0;
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+            }
+            div.basket .item {
+                text-align: center;
+                width: 120px;
+                margin: 5px;
+            }
+            div.basket .item .fruit {
+                font-size: 40px;
+                display: inline-block;
+                background-color: #fff;
+                border: 1px solid #333;
+                margin: 5px;
+                padding: 2px;
+                border-radius: 3px;
+            }
+            div.basket .break {
+                flex-basis: 100%;
+                height: 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>複利計算</h1>
+            <div class="js-inpage">
+                <div class="row">
+                    <div class="col-lg-3">
+                        本金
+                        <input type="text" id="txtP" placeholder="本金">
+                    </div>
+                    <div class="col-lg-3">
+                        利率
+                        <input type="text" id="txtR" placeholder="利率">
+                    </div>
+                    <div class="col-lg-3">
+                        期數
+                        <input type="text" id="txtT" placeholder="期數">
+                    </div>
+                    <div class="col-lg-3">
+                        倍數
+                        <input type="text" id="txtN" placeholder="倍數">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <button type="button" onclick="cal1();">依期數算</button>
+                    </div>
+                    <div class="col-lg-3">
+                        <button type="button" onclick="cal2();">依倍數算</button>
+                    </div>
+                </div>
+                <div id="divPowerTable">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>期數</th>
+                                <th>本金</th>
+                                <th>利息</th>
+                                <th>本利和</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabPower"></tbody>
+                    </table>
+                </div>
+                <br>
+                <script>
+                    function cal1() {
+                        var txtP = document.querySelector("#txtP");
+                        var txtR = document.querySelector("#txtR");
+                        var txtT = document.querySelector("#txtT");
+                        var P = parseInt(txtP.value);
+                        var R = parseFloat(txtR.value);
+                        var T = parseInt(txtT.value);
+
+                        var tableBody = '';
+                        var interest = 0;
+                        for (var i = 1; i <= T; i++) {
+                            tableBody += '<tr>';
+                                tableBody += '<td>' + i + '</td>';
+                                tableBody += '<td>' + P + '</td>';
+                                interest = Math.floor(P*R);
+                                P = P+interest;
+                                tableBody += '<td>' + interest + '</td>';
+                                tableBody += '<td>' + P + '</td>';
+                            tableBody += '</tr>';
+                        }
+                        
+                        var tabPower = document.querySelector("#tabPower");
+                        tabPower.innerHTML = tableBody;
+                    }
+                    function cal2() {
+                        var txtP = document.querySelector("#txtP");
+                        var txtR = document.querySelector("#txtR");
+                        var txtN = document.querySelector("#txtN");
+                        var P = parseInt(txtP.value);
+                        var R = parseFloat(txtR.value);
+                        var N = parseInt(txtN.value);
+                        var tableBody = '';
+                        var interest = 0;
+                        // for (var i = 1; i <= T; i++) {
+                        var i = 1;
+                        var dp = P*N;
+                        while (P<dp){
+                            tableBody += '<tr>';
+                            tableBody += '<td>' + i + '</td>';
+                            tableBody += '<td>' + P + '</td>';
+                            interest = Math.floor(P*R);
+                            P = P+interest;
+                            tableBody += '<td>' + interest + '</td>';
+                            tableBody += '<td>' + P + '</td>';
+                            tableBody += '</tr>';
+                            i++;
+                        }
+                        var tabPower = document.querySelector("#tabPower");
+                        tabPower.innerHTML = tableBody;
+                    }
+                </script>
+            </div>
+        </div>
+    </body>
+</html>
